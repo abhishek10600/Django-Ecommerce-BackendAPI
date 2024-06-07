@@ -121,7 +121,7 @@ def delete_product(request, pk):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def create_review(request, pk):
+def create_update_review(request, pk):
     user = request.user
     product = get_object_or_404(Product, id=pk)
     data = request.data
@@ -149,3 +149,21 @@ def create_review(request, pk):
         product.ratings = rating["avg_ratings"]
         product.save()
         return Response({"message": "Review posted."})
+
+
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def delete_review(request, pk):
+    user = request.user
+    product = get_object_or_404(Product, id=pk)
+    review = product.reviews.filter(user=user)
+    if review.exists():
+        review.delete()
+        rating = product.reviews.aggregate(avg_ratings=Avg("rating"))
+        if rating["avg_ratings"] is None:
+            rating["avg_ratings"] = 0
+        product.ratings = rating["avg_ratings"]
+        product.save()
+        return Response({"error": "Review delete."})
+    else:
+        return Response({"error": "Review not found"}, status=status.HTTP_404_NOT_FOUND)

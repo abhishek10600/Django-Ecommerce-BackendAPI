@@ -17,11 +17,14 @@ class ProductImagesSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
 
     images = ProductImagesSerializer(many=True, read_only=True)
+    reviews = serializers.SerializerMethodField(
+        method_name="get_reviews", read_only=True)
+    # reviews = ReviewSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
         fields = ["id", "name", "description", "price", "brand",
-                  "category", "stock", "ratings", "user", "images"]
+                  "category", "stock", "ratings", "user", "images", "reviews"]
 
         extra_kwargs = {
             "name": {"required": True},
@@ -30,3 +33,8 @@ class ProductSerializer(serializers.ModelSerializer):
             "brand": {"required": True},
             "category": {"required": True},
         }
+
+    def get_reviews(self, obj):
+        reviews = obj.reviews.all()
+        serializer = ReviewSerializer(reviews, many=True)
+        return serializer.data
