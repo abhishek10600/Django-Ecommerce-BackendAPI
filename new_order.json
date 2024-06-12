@@ -1,0 +1,15 @@
+{
+  "street": "123 Main St",
+  "city": "Anytown",
+  "state": "CA",
+  "zip_code": "12345",
+  "phone_no": "123-456-7890",
+  "country": "United States",
+  "orderItems": [
+    {
+      "product": 2,
+      "quantity": 1,
+      "price": 230
+    }
+  ]
+}

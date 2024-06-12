@@ -13,6 +13,8 @@ from django.core.mail import send_mail
 from .models import Profile
 from .serializers import SignupSerializer, UserSerializer
 
+from utils.helpers import get_current_host
+
 
 # Create your views here.
 
@@ -66,13 +68,6 @@ def update_user_profile(request):
     serializer = UserSerializer(user, many=False)
 
     return Response(serializer.data)
-
-
-def get_current_host(request):
-    protocol = request.is_secure() and "https" or "http"
-    host = request.get_host()
-
-    return f"{protocol}://{host}/"
 
 
 @api_view(["POST"])
